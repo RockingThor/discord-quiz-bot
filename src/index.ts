@@ -7,37 +7,34 @@ import {
   REST,
   Routes,
 } from "discord.js";
-import fs from "fs";
-import path from "path";
 import { CommandTmp } from "./types/type";
+import { AllCommands } from "./commands/commands";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
   partials: [Partials.Channel],
 });
 
-let commandTmp: CommandTmp[] = [];
 let commands: CommandTmp[] = [];
 
 client.once("ready", () => {
   console.log("Bot Ready!");
+  console.log(client.user?.tag);
+  console.log(client.users);
 
-  let commandFiles = fs.readdirSync(path.join(__dirname, "commands"));
-
-  commandFiles.forEach((file, i) => {
-    commandTmp[i] = require(`./commands/${file}`);
+  AllCommands.forEach((command) => {
     commands = [
       ...commands,
       {
-        name: file.split(".")[0],
-        description: "Hello",
-        init: commandTmp[i].init,
-        options: commandTmp[i].options,
+        name: command.name,
+        description: command.description,
+        init: command.init,
+        options: command.options,
       },
     ];
   });
 
-  console.log(commands);
+  // console.log(commands);
   const rest = new REST({ version: "9" }).setToken(process.env.TOKEN || "");
   rest
     .put(Routes.applicationCommands(client.application?.id || ""), {
