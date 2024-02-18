@@ -9,6 +9,8 @@ import {
 } from "discord.js";
 import { CommandTmp } from "./types/type";
 import { AllCommands } from "./commands/commands";
+import { options } from "./types/constants";
+import { startQuiz } from "./quizHelpers/startQuiz";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -19,8 +21,8 @@ let commands: CommandTmp[] = [];
 
 client.once("ready", () => {
   console.log("Bot Ready!");
-  console.log(client.user?.tag);
-  console.log(client.users);
+  // console.log(client.user?.tag);
+  // console.log(client.users);
 
   AllCommands.forEach((command) => {
     commands = [
@@ -67,6 +69,9 @@ client.once("ready", () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
   const { commandName } = interaction;
+  if (commandName == "start-quiz") {
+    await startQuiz(interaction);
+  }
   const selectedCommand = commands.find((c) => {
     return c.name === commandName;
   });

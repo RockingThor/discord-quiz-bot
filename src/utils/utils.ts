@@ -1,4 +1,8 @@
-const prepareOptionArray = (incorrectAns: string[], ans: string): string[] => {
+export const prepareOptionArray = (
+  incorrectAns: string[],
+  ans: string
+): string[] => {
+  console.log(incorrectAns);
   const ansIndex = Math.floor(Math.random() * 4);
   let optionArray: string[] = [];
   for (let i = 0; i < ansIndex; i++) {

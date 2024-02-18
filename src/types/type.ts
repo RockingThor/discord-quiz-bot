@@ -19,3 +19,8 @@ export interface Question {
   options: string[];
   answer: string;
 }
+
+export interface DifficultyLevel {
+  name: string;
+  value: string;
+}
