@@ -1,5 +1,11 @@
-import { ActionRowBuilder, CommandInteraction, REST } from "discord.js";
-import { Question } from "../types/type";
+import {
+  ActionRowBuilder,
+  Collector,
+  CommandInteraction,
+  InteractionResponse,
+  REST,
+} from "discord.js";
+import { Question, Score } from "../types/type";
 import { fetchQuestionByDifficulty } from "../utils/questionFetcher";
 import { getQuestionSelectMenu } from "./menus";
 
@@ -7,7 +13,8 @@ export async function sendQuestion(
   interaction: CommandInteraction,
   difficulty: string
 ) {
-  await interaction.followUp(
+  let scores: Score[] = [];
+  await interaction.channel?.send(
     "Fasten your seatbelts! Quiz questions on your way..."
   );
 
@@ -26,18 +33,35 @@ export async function sendQuestion(
     components: [questionRow],
   });
 
-  console.log("Was here 3");
-  const filter = (i: any) =>
-    i.customId === question?.answer && i.user.id === interaction.user.id;
+  let message = await interaction.fetchReply();
+  console.log("From message", message);
 
   try {
-    const collected = await interaction.channel?.awaitMessageComponent({
+    // const collected = await interaction.channel?.awaitMessageComponent({
+    //   filter,
+    //   time: 15_000,
+    // });
+    // if (collected) {
+    //   await interaction.followUp(`Correct answer is: ${question?.answer}`);
+    // }
+    const filter = (i: any) =>
+      i.isMessageComponent() && i.user.id !== interaction.client.user.id;
+    const collecter = interaction.channel?.createMessageComponentCollector({
       filter,
-      time: 15000,
+      time: 15_000,
     });
-    if (collected) {
-      await interaction.followUp(`Correct answer is: ${question?.answer}`);
-    }
+
+    collecter?.on("collect", async (i) => {
+      if (i.isAnySelectMenu()) {
+        await i.deferUpdate();
+        //console.log(i.values);
+        const selectedValue = i.values[0];
+      }
+    });
+    collecter?.on("end", async (i) => {
+      // console.log(i.values);
+      await interaction.channel?.send("Correct answer is: " + question?.answer);
+    });
   } catch (err) {
     console.log("Error: sendQuestion()");
     console.log(err);

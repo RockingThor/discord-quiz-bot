@@ -38,7 +38,7 @@ export async function startQuiz(interaction: CommandInteraction) {
   });
 
   collector?.on("end", async () => {
-    await interaction.followUp(
+    await interaction.channel?.send(
       "Time is up. Select the difficulty level again. To stop select stop from the given options"
     );
   });

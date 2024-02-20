@@ -24,3 +24,8 @@ export interface DifficultyLevel {
   name: string;
   value: string;
 }
+
+export interface Score {
+  username: string;
+  score: number;
+}

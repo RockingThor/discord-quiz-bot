@@ -69,13 +69,9 @@ client.once("ready", () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
   const { commandName } = interaction;
-  if (commandName == "start-quiz") {
-    await startQuiz(interaction);
-  }
   const selectedCommand = commands.find((c) => {
     return c.name === commandName;
   });
-
   selectedCommand?.init(interaction, client);
 });
 

@@ -1,5 +1,6 @@
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../types/type";
+import { startQuiz } from "../quizHelpers/startQuiz";
 
 export const AllCommands: Command[] = [
   {
@@ -12,8 +13,10 @@ export const AllCommands: Command[] = [
   {
     name: "start-quiz",
     description: "Starts a quiz",
-    init: (interaction: CommandInteraction, client: Client) => {
-      interaction.reply("pong");
+    init: async (interaction: CommandInteraction, client: Client) => {
+      interaction.reply("Starting quiz...");
+
+      await startQuiz(interaction);
     },
   },
 ];
